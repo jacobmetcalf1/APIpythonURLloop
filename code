@@ -1,0 +1,32 @@
+# mount google drive to python file
+from google.colab import drive
+drive.mount('/content/gdrive')
+
+#upload a csv that contains whatever parameters you want to pass to the url
+root_path = 'gdrive/My Drive/name_of_your_csv.csv'
+import pandas as pd
+import numpy as np
+df = pd.read_csv('gdrive/My Drive/name_of_your_csv.csv')
+
+import requests
+import json
+import time
+
+postcodes = df['parameter_name']
+#postcodes = postcodes = ['19287']
+
+api_data = dict()
+
+for i in postcodes:
+  rr = requests.get('http://apiURL?apikey=<apikey>&parameter_name={}'.format(i))
+  time.sleep(1)
+  data = json.loads(rr.text)
+  api_data.update({i: data})   
+  #print(data)
+
+print(api_data)
+
+
+out_file = open( "gdrive/My Drive/name_of_json_file.json", "w")
+json.dump(api_data, out_file, indent=7)
+out_file.close()
